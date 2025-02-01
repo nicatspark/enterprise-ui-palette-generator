@@ -1,325 +1,328 @@
-import chroma from 'chroma-js'
+import chroma from "chroma-js";
 
-import $ from 'jquery'
-import { adjustLuminanceToContrast } from '../js/adjustLuminanceToContrast.js'
-import { decreaseOpacityToContrast } from '../js/decreaseOpacityToContrast.js'
-import { setSaturation } from '../js/setSaturation.js'
+import $ from "jquery";
+import { adjustLuminanceToContrast } from "../js/adjustLuminanceToContrast.js";
+import { decreaseOpacityToContrast } from "../js/decreaseOpacityToContrast.js";
+import { setSaturation } from "../js/setSaturation.js";
 
-const wcagNonContentContrast = 3
-const wcagContentContrast = 4.5
-const root = document.documentElement
-const whiteColor = '#FFF'
-const blackColor = '#000'
+const wcagNonContentContrast = 3;
+const wcagContentContrast = 4.5;
+const root = document.documentElement;
+const whiteColor = "#FFF";
+const blackColor = "#000";
 
 // Empty color object for export
-const CSSVarsStore = { light: new Map(), dark: new Map() }
+const CSSVarsStore = { light: new Map(), dark: new Map() };
 
 // Insert the random color value into the text field
 function generateRandomColor() {
-  var randomColor = chroma.random().hex().toUpperCase()
-  $('#accentColor').val(randomColor)
-  $('#accentColor')
+  var randomColor = chroma.random().hex().toUpperCase();
+  $("#accentColor").val(randomColor);
+  $("#accentColor")
     .parent()
-    .find('.mini-swatch')
-    .css('background-color', randomColor)
+    .find(".mini-swatch")
+    .css("background-color", randomColor);
 }
 
-generateRandomColor()
-generatePalette()
+generateRandomColor();
+generatePalette();
 
-$('#generateBtn').on('click', function (e) {
-  generatePalette()
-  e.preventDefault()
-})
+$("#generateBtn").on("click", function (e) {
+  generatePalette();
+  e.preventDefault();
+});
 
-$('#lightModeBtn').on('click', function (e) {
-  $('html').attr('data-theme', 'light')
-  $(this).attr('data-state', 'on')
-  $('#darkModeBtn').attr('data-state', 'off')
-  setSwatchValues('light')
-  e.preventDefault()
-})
-$('#darkModeBtn').on('click', function (e) {
-  $('html').attr('data-theme', 'dark')
-  $(this).attr('data-state', 'on')
-  $('#lightModeBtn').attr('data-state', 'off')
-  setSwatchValues('dark')
-  e.preventDefault()
-})
+$("#lightModeBtn").on("click", function (e) {
+  $("html").attr("data-theme", "light");
+  $(this).attr("data-state", "on");
+  $("#darkModeBtn").attr("data-state", "off");
+  setSwatchValues("light");
+  e.preventDefault();
+});
+$("#darkModeBtn").on("click", function (e) {
+  $("html").attr("data-theme", "dark");
+  $(this).attr("data-state", "on");
+  $("#lightModeBtn").attr("data-state", "off");
+  setSwatchValues("dark");
+  e.preventDefault();
+});
 
-$('#randomColorBtn').on('click', function (e) {
-  generateRandomColor()
-  e.preventDefault()
-})
+$("#randomColorBtn").on("click", function (e) {
+  generateRandomColor();
+  e.preventDefault();
+});
 
-$('#tryBrandColor a').on('click', function (e) {
-  var brandColor = $(this).attr('data-color-value')
-  $('#accentColor').val(brandColor)
-  $('#accentColor')
+$("#tryBrandColor a").on("click", function (e) {
+  var brandColor = $(this).attr("data-color-value");
+  $("#accentColor").val(brandColor);
+  $("#accentColor")
     .parent()
-    .find('.mini-swatch')
-    .css('background-color', brandColor)
-  e.preventDefault()
-})
+    .find(".mini-swatch")
+    .css("background-color", brandColor);
+  e.preventDefault();
+});
 
-$('#accentColor').on('change', function (e) {
-  var color = $(this).val()
-  $('#accentColor').parent().find('.mini-swatch').css('background-color', color)
-})
+$("#accentColor").on("change", function (e) {
+  var color = $(this).val();
+  $("#accentColor")
+    .parent()
+    .find(".mini-swatch")
+    .css("background-color", color);
+});
 
 // Re-displ
 function setSwatchValues(theme) {
-  $('.swatch').each(function () {
-    var $value = $(this).find('.value')
-    $value.text($(this).attr(`data-${theme}-color`))
-  })
+  $(".swatch").each(function () {
+    var $value = $(this).find(".value");
+    $value.text($(this).attr(`data-${theme}-color`));
+  });
 }
 
 function setCssColor(theme, swatchId, cssVariable, color) {
   const styleElement =
     document.head.querySelector(`style[data-theme="${theme}"]`) ||
-    createThemeStyle(theme)
+    createThemeStyle(theme);
   styleElement.sheet.insertRule(
     `[data-theme="${theme}"] { ${cssVariable}: ${color}; }`,
-    styleElement.sheet.cssRules.length
-  ) // Declare CSS variables in head's style element
+    styleElement.sheet.cssRules.length,
+  ); // Declare CSS variables in head's style element
   // Store color in color map
-  CSSVarsStore[theme].set(cssVariable, color)
-  var $swatch = $(`#${swatchId}`) // Get the swatch
-  $swatch.attr(`data-${theme}-color`, color) // Ensure swatch remembers light/dark mode color
+  CSSVarsStore[theme].set(cssVariable, color);
+  var $swatch = $(`#${swatchId}`); // Get the swatch
+  $swatch.attr(`data-${theme}-color`, color); // Ensure swatch remembers light/dark mode color
   // $swatch.find('.value').text(color); // Display the color value in the swatch
 }
 
 function createCSSRootExport() {
-  const lightVars = Array.from(CSSVarsStore.light.entries())
-  const combined = lightVars.map((item) => [...item, x.dark.get(item[0])])
+  const lightVars = Array.from(CSSVarsStore.light.entries());
+  const combined = lightVars.map((item) => [...item, x.dark.get(item[0])]);
   const cssRootSelector = `:root {\n${combined
     .map(
-      ([key, value1, value2]) => `\t--${key}: lightDark(${value1}, ${value2});`
+      ([key, value1, value2]) => `\t--${key}: lightDark(${value1}, ${value2});`,
     )
-    .join('\n')}\n}`
-  return cssRootSelector
+    .join("\n")}\n}`;
+  return cssRootSelector;
 }
 
 function copyCSSVarsToClipboard() {
-  const CSSRoot = createCSSRootExport()
+  const CSSRoot = createCSSRootExport();
   navigator.clipboard.writeText(CSSRoot).then(
     function () {
-      console.log('Async: Copying to clipboard was successful!')
+      console.log("Async: Copying to clipboard was successful!");
     },
     function (err) {
-      console.error('Async: Could not copy text: ', err)
-    }
-  )
+      console.error("Async: Could not copy text: ", err);
+    },
+  );
 }
 
 // Create theme in head's style element
 function createThemeStyle(theme) {
-  const style = document.createElement('style')
-  style.setAttribute('data-theme', theme)
-  document.head.appendChild(style)
-  return style
+  const style = document.createElement("style");
+  style.setAttribute("data-theme", theme);
+  document.head.appendChild(style);
+  return style;
 }
 
 function generatePalette() {
-  const accentColor = $('#accentColor').val().trim()
-  const canvasContrast = $('#canvasContrast').val().trim()
-  const cardContrast = $('#cardContrast').val().trim()
-  const softContrast = $('#softContrast').val().trim()
-  const strongContrast = $('#strongContrast').val().trim()
-  const neutralSaturation = $('#neutralSaturation').val().trim()
-  const neutralContrast = $('#neutralContrast').val().trim()
-  const darkModeSaturation = $('#darkModeSaturation').val().trim()
+  const accentColor = $("#accentColor").val().trim();
+  const canvasContrast = $("#canvasContrast").val().trim();
+  const cardContrast = $("#cardContrast").val().trim();
+  const softContrast = $("#softContrast").val().trim();
+  const strongContrast = $("#strongContrast").val().trim();
+  const neutralSaturation = $("#neutralSaturation").val().trim();
+  const neutralContrast = $("#neutralContrast").val().trim();
+  const darkModeSaturation = $("#darkModeSaturation").val().trim();
 
   // **********
   // LIGHT MODE
   // **********
 
   // Establish light mode seed color
-  var lightSeedColor = accentColor
-  setCssColor('light', 'seed', '--color-seed', lightSeedColor.toUpperCase())
+  var lightSeedColor = accentColor;
+  setCssColor("light", "seed", "--color-seed", lightSeedColor.toUpperCase());
 
   // Establish light mode background colors
   var lightCanvasColor = adjustLuminanceToContrast(
     lightSeedColor,
     whiteColor,
-    canvasContrast
-  )
-  setCssColor('light', 'canvas', '--color-canvas', lightCanvasColor)
+    canvasContrast,
+  );
+  setCssColor("light", "canvas", "--color-canvas", lightCanvasColor);
   var lightCardColor = adjustLuminanceToContrast(
     lightSeedColor,
     whiteColor,
-    cardContrast
-  )
-  setCssColor('light', 'card', '--color-card', lightCardColor)
+    cardContrast,
+  );
+  setCssColor("light", "card", "--color-card", lightCardColor);
 
   // Establish light mode accent baseline colors
   var lightAccentNonContentBaselineColor = adjustLuminanceToContrast(
     lightSeedColor,
     lightCardColor,
-    wcagNonContentContrast
-  )
+    wcagNonContentContrast,
+  );
   setCssColor(
-    'light',
-    'accentNonContentBaseline',
-    '--color-accentNonContentBaseline',
-    lightAccentNonContentBaselineColor
-  )
+    "light",
+    "accentNonContentBaseline",
+    "--color-accentNonContentBaseline",
+    lightAccentNonContentBaselineColor,
+  );
   var lightAccentContentBaselineColor = adjustLuminanceToContrast(
     lightSeedColor,
     lightCardColor,
-    wcagContentContrast
-  )
+    wcagContentContrast,
+  );
   setCssColor(
-    'light',
-    'accentContentBaseline',
-    '--color-accentContentBaseline',
-    lightAccentContentBaselineColor
-  )
+    "light",
+    "accentContentBaseline",
+    "--color-accentContentBaseline",
+    lightAccentContentBaselineColor,
+  );
 
   // Establish light mode accent non-content colors
   var lightAccentNonContentStrongColor = adjustLuminanceToContrast(
     lightAccentNonContentBaselineColor,
     lightAccentNonContentBaselineColor,
     strongContrast,
-    'decrease'
-  )
+    "decrease",
+  );
   setCssColor(
-    'light',
-    'accentNonContentStrong',
-    '--color-accentNonContentStrong',
-    lightAccentNonContentStrongColor
-  )
+    "light",
+    "accentNonContentStrong",
+    "--color-accentNonContentStrong",
+    lightAccentNonContentStrongColor,
+  );
   var lightAccentNonContentSubduedColor = decreaseOpacityToContrast(
     lightAccentNonContentStrongColor,
     lightCardColor,
-    wcagNonContentContrast
-  )
+    wcagNonContentContrast,
+  );
   setCssColor(
-    'light',
-    'accentNonContentSubdued',
-    '--color-accentNonContentSubdued',
-    lightAccentNonContentSubduedColor
-  )
+    "light",
+    "accentNonContentSubdued",
+    "--color-accentNonContentSubdued",
+    lightAccentNonContentSubduedColor,
+  );
   var lightAccentNonContentSoftColor = decreaseOpacityToContrast(
     lightAccentNonContentStrongColor,
     lightCardColor,
-    softContrast
-  )
+    softContrast,
+  );
   setCssColor(
-    'light',
-    'accentNonContentSoft',
-    '--color-accentNonContentSoft',
-    lightAccentNonContentSoftColor
-  )
+    "light",
+    "accentNonContentSoft",
+    "--color-accentNonContentSoft",
+    lightAccentNonContentSoftColor,
+  );
 
   // Establish light mode accent content colors
   var lightAccentContentStrongColor = adjustLuminanceToContrast(
     lightAccentContentBaselineColor,
     lightAccentContentBaselineColor,
     strongContrast,
-    'decrease'
-  )
+    "decrease",
+  );
   setCssColor(
-    'light',
-    'accentContentStrong',
-    '--color-accentContentStrong',
-    lightAccentContentStrongColor
-  )
+    "light",
+    "accentContentStrong",
+    "--color-accentContentStrong",
+    lightAccentContentStrongColor,
+  );
   var lightAccentContentSubduedColor = decreaseOpacityToContrast(
     lightAccentContentStrongColor,
     lightCardColor,
-    wcagContentContrast
-  )
+    wcagContentContrast,
+  );
   setCssColor(
-    'light',
-    'accentContentSubdued',
-    '--color-accentContentSubdued',
-    lightAccentContentSubduedColor
-  )
+    "light",
+    "accentContentSubdued",
+    "--color-accentContentSubdued",
+    lightAccentContentSubduedColor,
+  );
 
   // Establish light mode neutral content colors
   var lightDesaturatedNeutralContentStrongColor = setSaturation(
     lightAccentContentStrongColor,
-    neutralSaturation
-  )
+    neutralSaturation,
+  );
   var lightNeutralContentStrongColor = adjustLuminanceToContrast(
     lightDesaturatedNeutralContentStrongColor,
     blackColor,
-    neutralContrast
-  )
+    neutralContrast,
+  );
   setCssColor(
-    'light',
-    'neutralContentStrong',
-    '--color-neutralContentStrong',
-    lightNeutralContentStrongColor
-  )
+    "light",
+    "neutralContentStrong",
+    "--color-neutralContentStrong",
+    lightNeutralContentStrongColor,
+  );
   var lightNeutralContentSubduedColor = decreaseOpacityToContrast(
     lightNeutralContentStrongColor,
     lightCardColor,
-    wcagContentContrast
-  )
+    wcagContentContrast,
+  );
   setCssColor(
-    'light',
-    'neutralContentSubdued',
-    '--color-neutralContentSubdued',
-    lightNeutralContentSubduedColor
-  )
+    "light",
+    "neutralContentSubdued",
+    "--color-neutralContentSubdued",
+    lightNeutralContentSubduedColor,
+  );
 
   // Establish light mode neutral non-content colors
   // Calculate the luminance difference between strong accent colors...
   // and apply the relative difference to the strong neutral content color...
   // to establish the strong neutral non-content color
   var lightAccentContentStrongColorLuminance = chroma(
-    lightAccentContentStrongColor
-  ).luminance()
+    lightAccentContentStrongColor,
+  ).luminance();
   var lightAccentNonContentStrongColorLuminance = chroma(
-    lightAccentNonContentStrongColor
-  ).luminance()
+    lightAccentNonContentStrongColor,
+  ).luminance();
   var lightNeutralContentStrongColorLuminance = chroma(
-    lightNeutralContentStrongColor
-  ).luminance()
+    lightNeutralContentStrongColor,
+  ).luminance();
   var lightNeutralStrongAccentLuminance =
     (lightAccentNonContentStrongColorLuminance /
       lightAccentContentStrongColorLuminance) *
-    lightNeutralContentStrongColorLuminance
+    lightNeutralContentStrongColorLuminance;
   var lightNeutralNonContentStrongColor = chroma(lightNeutralContentStrongColor)
     .luminance(lightNeutralStrongAccentLuminance)
-    .hex()
+    .hex();
   setCssColor(
-    'light',
-    'neutralNonContentStrong',
-    '--color-neutralNonContentStrong',
-    lightNeutralNonContentStrongColor
-  )
+    "light",
+    "neutralNonContentStrong",
+    "--color-neutralNonContentStrong",
+    lightNeutralNonContentStrongColor,
+  );
   var lightNeutralNonContentSubduedColor = decreaseOpacityToContrast(
     lightNeutralNonContentStrongColor,
     lightCardColor,
-    wcagNonContentContrast
-  )
+    wcagNonContentContrast,
+  );
   setCssColor(
-    'light',
-    'neutralNonContentSubdued',
-    '--color-neutralNonContentSubdued',
-    lightNeutralNonContentSubduedColor
-  )
+    "light",
+    "neutralNonContentSubdued",
+    "--color-neutralNonContentSubdued",
+    lightNeutralNonContentSubduedColor,
+  );
   var lightNeutralNonContentSoftColor = decreaseOpacityToContrast(
     lightNeutralNonContentStrongColor,
     lightCardColor,
-    softContrast
-  )
+    softContrast,
+  );
   setCssColor(
-    'light',
-    'neutralNonContentSoft',
-    '--color-neutralNonContentSoft',
-    lightNeutralNonContentSoftColor
-  )
+    "light",
+    "neutralNonContentSoft",
+    "--color-neutralNonContentSoft",
+    lightNeutralNonContentSoftColor,
+  );
 
   // *********
   // DARK MODE
   // *********
 
-  let createDarkMode = true
+  let createDarkMode = true;
 
   if (createDarkMode) {
     // Set UI style for dark mode
@@ -330,184 +333,184 @@ function generatePalette() {
 
     // Establish dark mode seed color...
     // by building on light mode colors
-    var darkSeedColor = setSaturation(lightSeedColor, darkModeSaturation)
-    setCssColor('dark', 'seed', '--color-seed', darkSeedColor)
+    var darkSeedColor = setSaturation(lightSeedColor, darkModeSaturation);
+    setCssColor("dark", "seed", "--color-seed", darkSeedColor);
 
     // Establish dark mode background colors...
     // By building on lightNeutralContentStrongColor
-    var darkCanvasColor = lightNeutralContentStrongColor
-    setCssColor('dark', 'canvas', '--color-canvas', darkCanvasColor)
+    var darkCanvasColor = lightNeutralContentStrongColor;
+    setCssColor("dark", "canvas", "--color-canvas", darkCanvasColor);
     var darkCardColor = adjustLuminanceToContrast(
       darkCanvasColor,
       darkCanvasColor,
       canvasContrast,
-      'increase'
-    )
-    setCssColor('dark', 'card', '--color-card', darkCardColor)
+      "increase",
+    );
+    setCssColor("dark", "card", "--color-card", darkCardColor);
 
     // Establish dark mode accent baseline colors
     var darkAccentNonContentBaselineColor = adjustLuminanceToContrast(
       darkSeedColor,
       darkCardColor,
-      wcagNonContentContrast
-    )
+      wcagNonContentContrast,
+    );
     setCssColor(
-      'dark',
-      'accentNonContentBaseline',
-      '--color-accentNonContentBaseline',
-      darkAccentNonContentBaselineColor
-    )
+      "dark",
+      "accentNonContentBaseline",
+      "--color-accentNonContentBaseline",
+      darkAccentNonContentBaselineColor,
+    );
     var darkAccentContentBaselineColor = adjustLuminanceToContrast(
       darkSeedColor,
       darkCardColor,
-      wcagContentContrast
-    )
+      wcagContentContrast,
+    );
     setCssColor(
-      'dark',
-      'accentContentBaseline',
-      '--color-accentContentBaseline',
-      darkAccentContentBaselineColor
-    )
+      "dark",
+      "accentContentBaseline",
+      "--color-accentContentBaseline",
+      darkAccentContentBaselineColor,
+    );
 
     // // Establish dark mode accent non-content colors
     var darkAccentNonContentStrongColor = adjustLuminanceToContrast(
       darkAccentNonContentBaselineColor,
       darkAccentNonContentBaselineColor,
       strongContrast,
-      'increase'
-    )
+      "increase",
+    );
     setCssColor(
-      'dark',
-      'accentNonContentStrong',
-      '--color-accentNonContentStrong',
-      darkAccentNonContentStrongColor
-    )
+      "dark",
+      "accentNonContentStrong",
+      "--color-accentNonContentStrong",
+      darkAccentNonContentStrongColor,
+    );
     var darkAccentNonContentSubduedColor = decreaseOpacityToContrast(
       darkAccentNonContentStrongColor,
       darkCardColor,
-      wcagNonContentContrast
-    )
+      wcagNonContentContrast,
+    );
     // console.log(darkAccentNonContentSubduedColor);
     setCssColor(
-      'dark',
-      'accentNonContentSubdued',
-      '--color-accentNonContentSubdued',
-      darkAccentNonContentSubduedColor
-    )
+      "dark",
+      "accentNonContentSubdued",
+      "--color-accentNonContentSubdued",
+      darkAccentNonContentSubduedColor,
+    );
     var darkAccentNonContentSoftColor = decreaseOpacityToContrast(
       darkAccentNonContentStrongColor,
       darkCardColor,
-      softContrast
-    )
+      softContrast,
+    );
     setCssColor(
-      'dark',
-      'accentNonContentSoft',
-      '--color-accentNonContentSoft',
-      darkAccentNonContentSoftColor
-    )
+      "dark",
+      "accentNonContentSoft",
+      "--color-accentNonContentSoft",
+      darkAccentNonContentSoftColor,
+    );
 
     // Establish dark mode accent content colors
     var darkAccentContentStrongColor = adjustLuminanceToContrast(
       darkAccentContentBaselineColor,
       darkAccentContentBaselineColor,
       strongContrast,
-      'increase'
-    )
+      "increase",
+    );
     setCssColor(
-      'dark',
-      'accentContentStrong',
-      '--color-accentContentStrong',
-      darkAccentContentStrongColor
-    )
+      "dark",
+      "accentContentStrong",
+      "--color-accentContentStrong",
+      darkAccentContentStrongColor,
+    );
     var darkAccentContentSubduedColor = decreaseOpacityToContrast(
       darkAccentContentStrongColor,
       darkCardColor,
-      wcagContentContrast
-    )
+      wcagContentContrast,
+    );
     setCssColor(
-      'dark',
-      'accentContentSubdued',
-      '--color-accentContentSubdued',
-      darkAccentContentSubduedColor
-    )
+      "dark",
+      "accentContentSubdued",
+      "--color-accentContentSubdued",
+      darkAccentContentSubduedColor,
+    );
 
     // Establish dark mode neutral content colors
     var darkDesaturatedNeutralContentStrongColor = setSaturation(
       darkAccentContentStrongColor,
-      neutralSaturation
-    )
+      neutralSaturation,
+    );
     var darkNeutralContentStrongColor = adjustLuminanceToContrast(
       darkDesaturatedNeutralContentStrongColor,
       whiteColor,
-      neutralContrast
-    )
+      neutralContrast,
+    );
     setCssColor(
-      'dark',
-      'neutralContentStrong',
-      '--color-neutralContentStrong',
-      darkNeutralContentStrongColor
-    )
+      "dark",
+      "neutralContentStrong",
+      "--color-neutralContentStrong",
+      darkNeutralContentStrongColor,
+    );
     var darkNeutralContentSubduedColor = decreaseOpacityToContrast(
       darkNeutralContentStrongColor,
       darkCardColor,
-      wcagContentContrast
-    )
+      wcagContentContrast,
+    );
     setCssColor(
-      'dark',
-      'neutralContentSubdued',
-      '--color-neutralContentSubdued',
-      darkNeutralContentSubduedColor
-    )
+      "dark",
+      "neutralContentSubdued",
+      "--color-neutralContentSubdued",
+      darkNeutralContentSubduedColor,
+    );
 
     // Establish dark mode neutral non-content colors
     // Calculate the luminance difference between strong accent colors...
     // and apply the relative difference to the strong neutral content color...
     // to establish the strong neutral non-content color
     var darkAccentContentStrongColorLuminance = chroma(
-      darkAccentContentStrongColor
-    ).luminance()
+      darkAccentContentStrongColor,
+    ).luminance();
     var darkAccentNonContentStrongColorLuminance = chroma(
-      darkAccentNonContentStrongColor
-    ).luminance()
+      darkAccentNonContentStrongColor,
+    ).luminance();
     var darkNeutralContentStrongColorLuminance = chroma(
-      darkNeutralContentStrongColor
-    ).luminance()
+      darkNeutralContentStrongColor,
+    ).luminance();
     var darkNeutralStrongAccentLuminance =
       (darkAccentNonContentStrongColorLuminance /
         darkAccentContentStrongColorLuminance) *
-      darkNeutralContentStrongColorLuminance
+      darkNeutralContentStrongColorLuminance;
     var darkNeutralNonContentStrongColor = chroma(darkNeutralContentStrongColor)
       .luminance(darkNeutralStrongAccentLuminance)
-      .hex()
+      .hex();
     setCssColor(
-      'dark',
-      'neutralNonContentStrong',
-      '--color-neutralNonContentStrong',
-      darkNeutralNonContentStrongColor
-    )
+      "dark",
+      "neutralNonContentStrong",
+      "--color-neutralNonContentStrong",
+      darkNeutralNonContentStrongColor,
+    );
     var darkNeutralNonContentSubduedColor = decreaseOpacityToContrast(
       darkNeutralNonContentStrongColor,
       darkCardColor,
-      wcagNonContentContrast
-    )
+      wcagNonContentContrast,
+    );
     setCssColor(
-      'dark',
-      'neutralNonContentSubdued',
-      '--color-neutralNonContentSubdued',
-      darkNeutralNonContentSubduedColor
-    )
+      "dark",
+      "neutralNonContentSubdued",
+      "--color-neutralNonContentSubdued",
+      darkNeutralNonContentSubduedColor,
+    );
     var darkNeutralNonContentSoftColor = decreaseOpacityToContrast(
       darkNeutralNonContentStrongColor,
       darkCardColor,
-      softContrast
-    )
+      softContrast,
+    );
     setCssColor(
-      'dark',
-      'neutralNonContentSoft',
-      '--color-neutralNonContentSoft',
-      darkNeutralNonContentSoftColor
-    )
+      "dark",
+      "neutralNonContentSoft",
+      "--color-neutralNonContentSoft",
+      darkNeutralNonContentSoftColor,
+    );
 
-    setSwatchValues($('html').attr('data-theme'))
+    setSwatchValues($("html").attr("data-theme"));
   }
 }

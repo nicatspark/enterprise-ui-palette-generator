@@ -25,12 +25,12 @@ description: >- # this means to ignore newlines until "baseurl:"
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: thisisfranciswu
-github_username:  thisisfranciswu
+github_username: thisisfranciswu
 
 # Build settings
 # theme: minima
 # plugins:
-  # - jekyll-feed
+# - jekyll-feed
 
 # Exclude from processing.
 # The following items will not be processed, by default.
@@ -41,11 +41,11 @@ github_username:  thisisfranciswu
 # their entries' file path in the `include:` list.
 #
 exclude:
-#   - .sass-cache/
-#   - .jekyll-cache/
-#   - gemfiles/
-#   - Gemfile
-#   - Gemfile.lock
+  #   - .sass-cache/
+  #   - .jekyll-cache/
+  #   - gemfiles/
+  #   - Gemfile
+  #   - Gemfile.lock
   - node_modules/
   - package.json
   - package-lock.json
@@ -56,7 +56,7 @@ exclude:
 #   - vendor/ruby/
 
 sass:
-#  style: compressed
+  #  style: compressed
   load_paths:
     - node_modules
     - _sass

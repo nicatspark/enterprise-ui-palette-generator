@@ -1,7 +1,8 @@
 body {
   line-height: var(--bodyLineHeight);
   padding: var(--space-xl);
-  font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   * {
     font-size: var(--fontSize-md);
     box-sizing: border-box;
@@ -140,7 +141,7 @@ form {
     left: var(--space-sm);
     position: absolute;
   }
-  input[type='text'] {
+  input[type="text"] {
     padding-left: 2.5rem;
     padding-right: 2.5rem;
   }
@@ -164,9 +165,9 @@ form {
   }
 }
 
-input[type=text],
-input[type=email],
-input[type=password] {
+input[type="text"],
+input[type="email"],
+input[type="password"] {
   @include border-radius("md");
   background: var(--color-card);
   box-shadow: inset 0 0 0 1px var(--color-neutralNonContentSubdued);
@@ -201,7 +202,11 @@ input[type=password] {
     background: var(--color-accentNonContentSoft);
     color: var(--color-accentContentStrong);
     &:hover {
-      background: color-mix(in oklab, var(--color-accentNonContentSoft), rgba(0, 0, 0, 0) 50%);
+      background: color-mix(
+        in oklab,
+        var(--color-accentNonContentSoft),
+        rgba(0, 0, 0, 0) 50%
+      );
     }
   }
   &.btn-select {
@@ -227,7 +232,11 @@ input[type=password] {
     width: 100%;
   }
   &:hover {
-    background: color-mix(in oklab, var(--color-accentNonContentStrong), white 15%);
+    background: color-mix(
+      in oklab,
+      var(--color-accentNonContentStrong),
+      white 15%
+    );
   }
 }
 
@@ -236,10 +245,9 @@ main {
 }
 
 #palette {
-
   @include flex-col(var(--space-md));
   @include border-radius("md");
-  
+
   .heading {
     @include flex-row(var(--space-md));
     h2 {
@@ -265,7 +273,7 @@ main {
         float: left;
         display: block;
       }
-      &[data-state='off'] {
+      &[data-state="off"] {
         background: none;
         color: var(--color-neutralContentSubdued);
         &:hover {
@@ -273,7 +281,7 @@ main {
           background: var(--color-neutralNonContentSoft);
         }
       }
-      &[data-state='on'] {
+      &[data-state="on"] {
         background: var(--color-card);
         color: var(--color-neutralContentStrong);
         box-shadow: inset 0 0 0 1px var(--color-neutralNonContentSubdued);
@@ -281,7 +289,11 @@ main {
           filter: brightness(115%);
         }
         .material-symbols-rounded {
-          font-variation-settings: 'FILL' 1, 'wght' 300, 'GRAD' 0, 'opsz' 24;          
+          font-variation-settings:
+            "FILL" 1,
+            "wght" 300,
+            "GRAD" 0,
+            "opsz" 24;
         }
       }
     }
@@ -392,27 +404,55 @@ main {
   #contentGroup {
     flex: 2 1 0;
   }
-
 }
 
-#seed > .color { background-color: var(--color-seed); }
-#canvas > .color { background-color: var(--color-canvas); }
-#card > .color { background-color: var(--color-card); }
-#accentNonContentBaseline > .color { background-color: var(--color-accentNonContentBaseline); }
-#accentContentBaseline > .color { background-color: var(--color-accentContentBaseline); }
-#accentNonContentSoft > .color { background-color: var(--color-accentNonContentSoft); }
-#accentNonContentSubdued > .color { background-color: var(--color-accentNonContentSubdued); }
-#accentNonContentStrong > .color { background-color: var(--color-accentNonContentStrong); }
-#accentContentSubdued > .color { background-color: var(--color-accentContentSubdued); }
-#accentContentStrong > .color { background-color: var(--color-accentContentStrong); }
-#neutralNonContentSoft > .color { background-color: var(--color-neutralNonContentSoft); }
-#neutralNonContentSubdued > .color { background-color: var(--color-neutralNonContentSubdued); }
-#neutralNonContentStrong > .color { background-color: var(--color-neutralNonContentStrong); }
-#neutralContentSubdued > .color { background-color: var(--color-neutralContentSubdued); }
-#neutralContentStrong > .color { background-color: var(--color-neutralContentStrong); }
+#seed > .color {
+  background-color: var(--color-seed);
+}
+#canvas > .color {
+  background-color: var(--color-canvas);
+}
+#card > .color {
+  background-color: var(--color-card);
+}
+#accentNonContentBaseline > .color {
+  background-color: var(--color-accentNonContentBaseline);
+}
+#accentContentBaseline > .color {
+  background-color: var(--color-accentContentBaseline);
+}
+#accentNonContentSoft > .color {
+  background-color: var(--color-accentNonContentSoft);
+}
+#accentNonContentSubdued > .color {
+  background-color: var(--color-accentNonContentSubdued);
+}
+#accentNonContentStrong > .color {
+  background-color: var(--color-accentNonContentStrong);
+}
+#accentContentSubdued > .color {
+  background-color: var(--color-accentContentSubdued);
+}
+#accentContentStrong > .color {
+  background-color: var(--color-accentContentStrong);
+}
+#neutralNonContentSoft > .color {
+  background-color: var(--color-neutralNonContentSoft);
+}
+#neutralNonContentSubdued > .color {
+  background-color: var(--color-neutralNonContentSubdued);
+}
+#neutralNonContentStrong > .color {
+  background-color: var(--color-neutralNonContentStrong);
+}
+#neutralContentSubdued > .color {
+  background-color: var(--color-neutralContentSubdued);
+}
+#neutralContentStrong > .color {
+  background-color: var(--color-neutralContentStrong);
+}
 
 #canvas {
-
   @include border-radius("md");
   @include flex-row(var(--space-lg));
   padding: var(--space-lg);
@@ -422,10 +462,14 @@ main {
     flex: 1 1 0;
     min-width: 0;
   }
-  
+
   .material-symbols-rounded {
     font-size: var(--fontSize-lg);
-    font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+    font-variation-settings:
+      "FILL" 0,
+      "wght" 300,
+      "GRAD" 0,
+      "opsz" 24;
   }
 
   .card {
@@ -503,8 +547,8 @@ main {
     }
   }
 
-  input[type=checkbox],
-  input[type=radio] {
+  input[type="checkbox"],
+  input[type="radio"] {
     appearance: none;
     background: var(--color-card);
     box-shadow: inset 0 0 0 1px var(--color-neutralNonContentSubdued);
@@ -524,7 +568,7 @@ main {
       top: 0;
     }
   }
-  input[type=checkbox] {
+  input[type="checkbox"] {
     @include border-radius("sm");
     &:checked {
       background: var(--color-accentNonContentStrong);
@@ -571,7 +615,7 @@ main {
       }
     }
   }
-  input[type=radio] {
+  input[type="radio"] {
     @include border-radius("mx");
     &:checked {
       box-shadow: inset 0 0 0 1px var(--color-accentNonContentStrong);
@@ -685,7 +729,7 @@ main {
   }
 
   .avatars {
-    overflow: hidden;   
+    overflow: hidden;
     .avatar {
       @include border-radius("mx");
       width: var(--space-xl);
@@ -722,11 +766,17 @@ main {
       &.avatar-icon {
         span {
           font-size: calc(var(--fontSize-md) * 1.5);
-          font-variation-settings: 'FILL' 1, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+          font-variation-settings:
+            "FILL" 1,
+            "wght" 300,
+            "GRAD" 0,
+            "opsz" 24;
           line-height: var(--space-xl);
         }
         &.avatar-solid {
-          span { color: var(--color-card); }
+          span {
+            color: var(--color-card);
+          }
         }
         &.avatar-soft {
           &.avatar-subdued {
@@ -769,7 +819,7 @@ main {
     padding: var(--space-md);
     .form-check {
       @include flex-row(var(--space-sm));
-      input[type=checkbox] {
+      input[type="checkbox"] {
         flex: none;
       }
       label {
@@ -788,19 +838,28 @@ main {
       }
     }
   }
-
 }
 
-[data-theme='light'] {
-  body { background-color: #fff; }
-  #palette .swatch .value { background: #fff; }
+[data-theme="light"] {
+  body {
+    background-color: #fff;
+  }
+  #palette .swatch .value {
+    background: #fff;
+  }
 }
-[data-theme='dark'] {
-  body { background-color: #000; }
-  #palette .swatch .value { background: #000; }
+[data-theme="dark"] {
+  body {
+    background-color: #000;
+  }
+  #palette .swatch .value {
+    background: #000;
+  }
   #canvas .card {
     box-shadow: inset 0 0 0 1px var(--color-neutralNonContentSoft);
   }
 }
 
-.hidden-social-media-thumbnail { display: none; }
+.hidden-social-media-thumbnail {
+  display: none;
+}

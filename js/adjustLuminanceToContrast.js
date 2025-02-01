@@ -1,7 +1,11 @@
-import chroma from 'chroma-js';
+import chroma from "chroma-js";
 
-export function adjustLuminanceToContrast(fgColor, bgColor, targetContrast, fgLuminanceDirection) {
-
+export function adjustLuminanceToContrast(
+  fgColor,
+  bgColor,
+  targetContrast,
+  fgLuminanceDirection,
+) {
   const bgLuminance = chroma(bgColor).luminance(); // Get background luminance
   let fgLuminance = chroma(fgColor).luminance(); // Get foreground luminance
   let stepSize = 0.0001; // Size and direction of luminance adjustment
@@ -17,9 +21,13 @@ export function adjustLuminanceToContrast(fgColor, bgColor, targetContrast, fgLu
   };
 
   // Determine appropriate luminance direction
-  var fgLighterLuminance = chroma(fgColor).luminance(fgLuminance * 1.25).luminance(); // Get luminance of lightened fgColor...
+  var fgLighterLuminance = chroma(fgColor)
+    .luminance(fgLuminance * 1.25)
+    .luminance(); // Get luminance of lightened fgColor...
   var fgLighterContrast = getContrast(fgLighterLuminance); // ... and get its contrast ratio
-  var fgDarkerLuminance = chroma(fgColor).luminance(fgLuminance * 0.75).luminance(); // Get luminance of darkened fgColor...
+  var fgDarkerLuminance = chroma(fgColor)
+    .luminance(fgLuminance * 0.75)
+    .luminance(); // Get luminance of darkened fgColor...
   var fgDarkerContrast = getContrast(fgDarkerLuminance); // ... and get its contrast ratio
   // console.log(`fgLighterContrast: ${fgLighterContrast} | fgDarkerContrast: ${fgDarkerContrast}`);
 
@@ -30,7 +38,8 @@ export function adjustLuminanceToContrast(fgColor, bgColor, targetContrast, fgLu
 
   if (fgLuminanceDirection === undefined) {
     // Determine fgLuminanceDirection if underfined
-    if (diffDarker < diffLighter) { // If darkening luminance gets us closer to targetContrast...
+    if (diffDarker < diffLighter) {
+      // If darkening luminance gets us closer to targetContrast...
       var fgLuminanceDirection = "decrease";
       // console.log("should decrease luminance");
     } else {
@@ -47,7 +56,10 @@ export function adjustLuminanceToContrast(fgColor, bgColor, targetContrast, fgLu
   var adjustedFgColor;
   var iteration = 0;
   var maxIterations = 999999;
-  while (Math.abs(fgContrast - targetContrast) > precision && iteration != maxIterations) {
+  while (
+    Math.abs(fgContrast - targetContrast) > precision &&
+    iteration != maxIterations
+  ) {
     // console.log(`fgContrast: ${fgContrast} contrastDiff: ${Math.abs(fgContrast - targetContrast)}`);
     adjustedLuminance += stepSize;
     // console.log(`adjustedLuminance: ${adjustedLuminance}`);
@@ -59,5 +71,4 @@ export function adjustLuminanceToContrast(fgColor, bgColor, targetContrast, fgLu
   // Return the color with the adjusted luminance
   // console.log(chroma(fgColor).luminance(adjustedLuminance).hex().toUpperCase());
   return chroma(fgColor).luminance(adjustedLuminance).hex().toUpperCase();
-
 }
