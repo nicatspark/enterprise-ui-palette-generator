@@ -5,3 +5,4 @@ _site
 .parcel-cache
 vendor
 node_modules
+.DS_Store
