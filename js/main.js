@@ -32,6 +32,11 @@ $("#generateBtn").on("click", function (e) {
   e.preventDefault();
 });
 
+$("#exportBtn").on("click", function (e) {
+  copyCSSVarsToClipboard();
+  e.preventDefault();
+});
+
 $("#lightModeBtn").on("click", function (e) {
   $("html").attr("data-theme", "light");
   $(this).attr("data-state", "on");
@@ -84,7 +89,7 @@ function setCssColor(theme, swatchId, cssVariable, color) {
     createThemeStyle(theme);
   styleElement.sheet.insertRule(
     `[data-theme="${theme}"] { ${cssVariable}: ${color}; }`,
-    styleElement.sheet.cssRules.length,
+    styleElement.sheet.cssRules.length
   ); // Declare CSS variables in head's style element
   // Store color in color map
   CSSVarsStore[theme].set(cssVariable, color);
@@ -98,7 +103,7 @@ function createCSSRootExport() {
   const combined = lightVars.map((item) => [...item, x.dark.get(item[0])]);
   const cssRootSelector = `:root {\n${combined
     .map(
-      ([key, value1, value2]) => `\t--${key}: lightDark(${value1}, ${value2});`,
+      ([key, value1, value2]) => `\t--${key}: lightDark(${value1}, ${value2});`
     )
     .join("\n")}\n}`;
   return cssRootSelector;
@@ -112,7 +117,7 @@ function copyCSSVarsToClipboard() {
     },
     function (err) {
       console.error("Async: Could not copy text: ", err);
-    },
+    }
   );
 }
 
@@ -146,13 +151,13 @@ function generatePalette() {
   var lightCanvasColor = adjustLuminanceToContrast(
     lightSeedColor,
     whiteColor,
-    canvasContrast,
+    canvasContrast
   );
   setCssColor("light", "canvas", "--color-canvas", lightCanvasColor);
   var lightCardColor = adjustLuminanceToContrast(
     lightSeedColor,
     whiteColor,
-    cardContrast,
+    cardContrast
   );
   setCssColor("light", "card", "--color-card", lightCardColor);
 
@@ -160,24 +165,24 @@ function generatePalette() {
   var lightAccentNonContentBaselineColor = adjustLuminanceToContrast(
     lightSeedColor,
     lightCardColor,
-    wcagNonContentContrast,
+    wcagNonContentContrast
   );
   setCssColor(
     "light",
     "accentNonContentBaseline",
     "--color-accentNonContentBaseline",
-    lightAccentNonContentBaselineColor,
+    lightAccentNonContentBaselineColor
   );
   var lightAccentContentBaselineColor = adjustLuminanceToContrast(
     lightSeedColor,
     lightCardColor,
-    wcagContentContrast,
+    wcagContentContrast
   );
   setCssColor(
     "light",
     "accentContentBaseline",
     "--color-accentContentBaseline",
-    lightAccentContentBaselineColor,
+    lightAccentContentBaselineColor
   );
 
   // Establish light mode accent non-content colors
@@ -185,35 +190,35 @@ function generatePalette() {
     lightAccentNonContentBaselineColor,
     lightAccentNonContentBaselineColor,
     strongContrast,
-    "decrease",
+    "decrease"
   );
   setCssColor(
     "light",
     "accentNonContentStrong",
     "--color-accentNonContentStrong",
-    lightAccentNonContentStrongColor,
+    lightAccentNonContentStrongColor
   );
   var lightAccentNonContentSubduedColor = decreaseOpacityToContrast(
     lightAccentNonContentStrongColor,
     lightCardColor,
-    wcagNonContentContrast,
+    wcagNonContentContrast
   );
   setCssColor(
     "light",
     "accentNonContentSubdued",
     "--color-accentNonContentSubdued",
-    lightAccentNonContentSubduedColor,
+    lightAccentNonContentSubduedColor
   );
   var lightAccentNonContentSoftColor = decreaseOpacityToContrast(
     lightAccentNonContentStrongColor,
     lightCardColor,
-    softContrast,
+    softContrast
   );
   setCssColor(
     "light",
     "accentNonContentSoft",
     "--color-accentNonContentSoft",
-    lightAccentNonContentSoftColor,
+    lightAccentNonContentSoftColor
   );
 
   // Establish light mode accent content colors
@@ -221,52 +226,52 @@ function generatePalette() {
     lightAccentContentBaselineColor,
     lightAccentContentBaselineColor,
     strongContrast,
-    "decrease",
+    "decrease"
   );
   setCssColor(
     "light",
     "accentContentStrong",
     "--color-accentContentStrong",
-    lightAccentContentStrongColor,
+    lightAccentContentStrongColor
   );
   var lightAccentContentSubduedColor = decreaseOpacityToContrast(
     lightAccentContentStrongColor,
     lightCardColor,
-    wcagContentContrast,
+    wcagContentContrast
   );
   setCssColor(
     "light",
     "accentContentSubdued",
     "--color-accentContentSubdued",
-    lightAccentContentSubduedColor,
+    lightAccentContentSubduedColor
   );
 
   // Establish light mode neutral content colors
   var lightDesaturatedNeutralContentStrongColor = setSaturation(
     lightAccentContentStrongColor,
-    neutralSaturation,
+    neutralSaturation
   );
   var lightNeutralContentStrongColor = adjustLuminanceToContrast(
     lightDesaturatedNeutralContentStrongColor,
     blackColor,
-    neutralContrast,
+    neutralContrast
   );
   setCssColor(
     "light",
     "neutralContentStrong",
     "--color-neutralContentStrong",
-    lightNeutralContentStrongColor,
+    lightNeutralContentStrongColor
   );
   var lightNeutralContentSubduedColor = decreaseOpacityToContrast(
     lightNeutralContentStrongColor,
     lightCardColor,
-    wcagContentContrast,
+    wcagContentContrast
   );
   setCssColor(
     "light",
     "neutralContentSubdued",
     "--color-neutralContentSubdued",
-    lightNeutralContentSubduedColor,
+    lightNeutralContentSubduedColor
   );
 
   // Establish light mode neutral non-content colors
@@ -274,13 +279,13 @@ function generatePalette() {
   // and apply the relative difference to the strong neutral content color...
   // to establish the strong neutral non-content color
   var lightAccentContentStrongColorLuminance = chroma(
-    lightAccentContentStrongColor,
+    lightAccentContentStrongColor
   ).luminance();
   var lightAccentNonContentStrongColorLuminance = chroma(
-    lightAccentNonContentStrongColor,
+    lightAccentNonContentStrongColor
   ).luminance();
   var lightNeutralContentStrongColorLuminance = chroma(
-    lightNeutralContentStrongColor,
+    lightNeutralContentStrongColor
   ).luminance();
   var lightNeutralStrongAccentLuminance =
     (lightAccentNonContentStrongColorLuminance /
@@ -293,29 +298,29 @@ function generatePalette() {
     "light",
     "neutralNonContentStrong",
     "--color-neutralNonContentStrong",
-    lightNeutralNonContentStrongColor,
+    lightNeutralNonContentStrongColor
   );
   var lightNeutralNonContentSubduedColor = decreaseOpacityToContrast(
     lightNeutralNonContentStrongColor,
     lightCardColor,
-    wcagNonContentContrast,
+    wcagNonContentContrast
   );
   setCssColor(
     "light",
     "neutralNonContentSubdued",
     "--color-neutralNonContentSubdued",
-    lightNeutralNonContentSubduedColor,
+    lightNeutralNonContentSubduedColor
   );
   var lightNeutralNonContentSoftColor = decreaseOpacityToContrast(
     lightNeutralNonContentStrongColor,
     lightCardColor,
-    softContrast,
+    softContrast
   );
   setCssColor(
     "light",
     "neutralNonContentSoft",
     "--color-neutralNonContentSoft",
-    lightNeutralNonContentSoftColor,
+    lightNeutralNonContentSoftColor
   );
 
   // *********
@@ -344,7 +349,7 @@ function generatePalette() {
       darkCanvasColor,
       darkCanvasColor,
       canvasContrast,
-      "increase",
+      "increase"
     );
     setCssColor("dark", "card", "--color-card", darkCardColor);
 
@@ -352,24 +357,24 @@ function generatePalette() {
     var darkAccentNonContentBaselineColor = adjustLuminanceToContrast(
       darkSeedColor,
       darkCardColor,
-      wcagNonContentContrast,
+      wcagNonContentContrast
     );
     setCssColor(
       "dark",
       "accentNonContentBaseline",
       "--color-accentNonContentBaseline",
-      darkAccentNonContentBaselineColor,
+      darkAccentNonContentBaselineColor
     );
     var darkAccentContentBaselineColor = adjustLuminanceToContrast(
       darkSeedColor,
       darkCardColor,
-      wcagContentContrast,
+      wcagContentContrast
     );
     setCssColor(
       "dark",
       "accentContentBaseline",
       "--color-accentContentBaseline",
-      darkAccentContentBaselineColor,
+      darkAccentContentBaselineColor
     );
 
     // // Establish dark mode accent non-content colors
@@ -377,36 +382,36 @@ function generatePalette() {
       darkAccentNonContentBaselineColor,
       darkAccentNonContentBaselineColor,
       strongContrast,
-      "increase",
+      "increase"
     );
     setCssColor(
       "dark",
       "accentNonContentStrong",
       "--color-accentNonContentStrong",
-      darkAccentNonContentStrongColor,
+      darkAccentNonContentStrongColor
     );
     var darkAccentNonContentSubduedColor = decreaseOpacityToContrast(
       darkAccentNonContentStrongColor,
       darkCardColor,
-      wcagNonContentContrast,
+      wcagNonContentContrast
     );
     // console.log(darkAccentNonContentSubduedColor);
     setCssColor(
       "dark",
       "accentNonContentSubdued",
       "--color-accentNonContentSubdued",
-      darkAccentNonContentSubduedColor,
+      darkAccentNonContentSubduedColor
     );
     var darkAccentNonContentSoftColor = decreaseOpacityToContrast(
       darkAccentNonContentStrongColor,
       darkCardColor,
-      softContrast,
+      softContrast
     );
     setCssColor(
       "dark",
       "accentNonContentSoft",
       "--color-accentNonContentSoft",
-      darkAccentNonContentSoftColor,
+      darkAccentNonContentSoftColor
     );
 
     // Establish dark mode accent content colors
@@ -414,52 +419,52 @@ function generatePalette() {
       darkAccentContentBaselineColor,
       darkAccentContentBaselineColor,
       strongContrast,
-      "increase",
+      "increase"
     );
     setCssColor(
       "dark",
       "accentContentStrong",
       "--color-accentContentStrong",
-      darkAccentContentStrongColor,
+      darkAccentContentStrongColor
     );
     var darkAccentContentSubduedColor = decreaseOpacityToContrast(
       darkAccentContentStrongColor,
       darkCardColor,
-      wcagContentContrast,
+      wcagContentContrast
     );
     setCssColor(
       "dark",
       "accentContentSubdued",
       "--color-accentContentSubdued",
-      darkAccentContentSubduedColor,
+      darkAccentContentSubduedColor
     );
 
     // Establish dark mode neutral content colors
     var darkDesaturatedNeutralContentStrongColor = setSaturation(
       darkAccentContentStrongColor,
-      neutralSaturation,
+      neutralSaturation
     );
     var darkNeutralContentStrongColor = adjustLuminanceToContrast(
       darkDesaturatedNeutralContentStrongColor,
       whiteColor,
-      neutralContrast,
+      neutralContrast
     );
     setCssColor(
       "dark",
       "neutralContentStrong",
       "--color-neutralContentStrong",
-      darkNeutralContentStrongColor,
+      darkNeutralContentStrongColor
     );
     var darkNeutralContentSubduedColor = decreaseOpacityToContrast(
       darkNeutralContentStrongColor,
       darkCardColor,
-      wcagContentContrast,
+      wcagContentContrast
     );
     setCssColor(
       "dark",
       "neutralContentSubdued",
       "--color-neutralContentSubdued",
-      darkNeutralContentSubduedColor,
+      darkNeutralContentSubduedColor
     );
 
     // Establish dark mode neutral non-content colors
@@ -467,13 +472,13 @@ function generatePalette() {
     // and apply the relative difference to the strong neutral content color...
     // to establish the strong neutral non-content color
     var darkAccentContentStrongColorLuminance = chroma(
-      darkAccentContentStrongColor,
+      darkAccentContentStrongColor
     ).luminance();
     var darkAccentNonContentStrongColorLuminance = chroma(
-      darkAccentNonContentStrongColor,
+      darkAccentNonContentStrongColor
     ).luminance();
     var darkNeutralContentStrongColorLuminance = chroma(
-      darkNeutralContentStrongColor,
+      darkNeutralContentStrongColor
     ).luminance();
     var darkNeutralStrongAccentLuminance =
       (darkAccentNonContentStrongColorLuminance /
@@ -486,29 +491,29 @@ function generatePalette() {
       "dark",
       "neutralNonContentStrong",
       "--color-neutralNonContentStrong",
-      darkNeutralNonContentStrongColor,
+      darkNeutralNonContentStrongColor
     );
     var darkNeutralNonContentSubduedColor = decreaseOpacityToContrast(
       darkNeutralNonContentStrongColor,
       darkCardColor,
-      wcagNonContentContrast,
+      wcagNonContentContrast
     );
     setCssColor(
       "dark",
       "neutralNonContentSubdued",
       "--color-neutralNonContentSubdued",
-      darkNeutralNonContentSubduedColor,
+      darkNeutralNonContentSubduedColor
     );
     var darkNeutralNonContentSoftColor = decreaseOpacityToContrast(
       darkNeutralNonContentStrongColor,
       darkCardColor,
-      softContrast,
+      softContrast
     );
     setCssColor(
       "dark",
       "neutralNonContentSoft",
       "--color-neutralNonContentSoft",
-      darkNeutralNonContentSoftColor,
+      darkNeutralNonContentSoftColor
     );
 
     setSwatchValues($("html").attr("data-theme"));
